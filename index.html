@@ -224,13 +224,16 @@
   }
   .review-shots{
     display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+    justify-items:center; align-items:center;
   }
   .review-shot{
-    width:100%; height:auto;
+    width:auto; max-width:100%; height:auto;
+    max-height:180px;
+    object-fit:contain;
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:12px;
-    padding:10px;
+    padding:14px;
     box-shadow:0 16px 32px -26px rgba(18,21,26,0.16);
   }
   .review-card{
