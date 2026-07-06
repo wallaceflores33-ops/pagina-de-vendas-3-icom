@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iCom Motors — Mais de 80 Carros Revisados Esperando Por Você</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F7FA;
+    --bg-soft: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #EEF1F5;
+    --line: #E1E5EA;
+    --blue: #1657FF;
+    --blue-soft: rgba(22,87,255,0.08);
+    --orange: #FF6A1A;
+    --text: #12151A;
+    --muted: #5B6470;
+    --star: #FFC53D;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Manrope', sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+  h1,h2,h3{font-family:'Barlow Condensed', sans-serif; font-weight:900; letter-spacing:0.2px; text-transform:uppercase; line-height:1.02;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--blue);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px; height:2px; background:var(--orange);
+    display:inline-block;
+  }
+
+  /* asphalt texture background */
+  .asphalt{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(22,87,255,0.07), transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, rgba(255,106,26,0.05), transparent 55%),
+      var(--bg);
+  }
+  .asphalt::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(18,21,26,0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity:0.6;
+  }
+
+  .road-divider{
+    width:100%; height:34px;
+    background: repeating-linear-gradient(90deg, #D7DBE1 0 28px, transparent 28px 52px);
+    background-position-y:center;
+    background-repeat:no-repeat;
+    background-size: auto 3px;
+    background-position:center;
+    opacity:1;
+  }
+
+  /* header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+    max-width:1120px; margin:0 auto;
+  }
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo img{height:40px; width:40px; border-radius:9px;}
+  .logo span{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; letter-spacing:0.5px;}
+  .btn{
+    font-family:'Manrope'; font-weight:800; font-size:14.5px;
+    border:none; cursor:pointer;
+    border-radius:999px;
+    display:inline-flex; align-items:center; gap:9px;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    text-decoration:none;
+  }
+  .btn-primary{
+    background:var(--blue); color:#fff;
+    padding:13px 24px;
+    box-shadow:0 8px 24px -8px rgba(22,87,255,0.65);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 30px -8px rgba(22,87,255,0.8); }
+  .btn-header{ padding:10px 18px; font-size:13.5px; }
+  .btn svg{width:18px; height:18px; flex-shrink:0;}
+
+  /* hero */
+  .hero{
+    padding:88px 0 60px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(40px, 5.4vw, 72px);
+    margin:18px 0 20px;
+    max-width:11ch;
+  }
+  .hero h1 .hl{color:var(--blue);}
+  .hero p.sub{
+    font-size:19px; color:var(--muted); max-width:46ch; margin-bottom:32px;
+  }
+  .hero-ctas{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .hero-note{ font-size:13px; color:var(--muted); font-family:'JetBrains Mono'; }
+
+  /* odometer */
+  .odo-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:28px 26px;
+    box-shadow:0 24px 48px -28px rgba(18,21,26,0.18);
+    position:relative;
+    overflow:hidden;
+  }
+  .odo-card::before{
+    content:"ESTOQUE AO VIVO";
+    position:absolute; top:14px; right:18px;
+    font-family:'JetBrains Mono'; font-size:10.5px; letter-spacing:2px;
+    color:var(--muted);
+  }
+  .odo-label{
+    font-family:'JetBrains Mono'; font-size:12px; letter-spacing:1.5px; color:var(--muted); margin-bottom:14px;
+  }
+  .odo-digits{ display:flex; gap:8px; margin-bottom:18px; }
+  .odo-digit{
+    background:#12151A;
+    border:1px solid #12151A;
+    border-radius:10px;
+    width:56px; height:74px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-size:40px; font-weight:700;
+    color:#F5F7FA;
+    box-shadow: inset 0 -20px 30px -20px rgba(22,87,255,0.45);
+  }
+  .odo-plus{
+    background:var(--blue);
+    color:#fff;
+    border-radius:10px;
+    width:40px; height:74px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Barlow Condensed'; font-size:30px; font-weight:900;
+  }
+  .odo-sub{ font-size:14.5px; color:var(--muted); }
+  .odo-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+  .odo-tag{
+    font-family:'JetBrains Mono'; font-size:11.5px; letter-spacing:0.5px;
+    background:var(--surface-2); border:1px solid var(--line);
+    color:var(--muted);
+    padding:6px 11px; border-radius:999px;
+  }
+
+  section{ padding:76px 0; }
+  .section-head{ max-width:640px; margin-bottom:44px; }
+  .section-head h2{ font-size:clamp(30px,3.6vw,46px); margin-top:14px; }
+  .section-head p{ color:var(--muted); font-size:16.5px; margin-top:12px; }
+
+  /* diferenciais */
+  .diff-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+  }
+  .diff-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 22px;
+    box-shadow:0 16px 32px -26px rgba(18,21,26,0.16);
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .diff-card:hover{ transform:translateY(-6px); border-color:var(--blue); }
+  .diff-icon{
+    width:44px; height:44px; border-radius:11px;
+    background:var(--blue-soft);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px;
+  }
+  .diff-icon svg{ width:22px; height:22px; stroke:var(--blue); }
+  .diff-card h3{ font-size:20px; text-transform:none; letter-spacing:0; margin-bottom:8px; }
+  .diff-card p{ font-size:14.5px; color:var(--muted); }
+
+  /* testimonials */
+  .reviews-strip{
+    display:flex; align-items:center; gap:10px; margin-bottom:38px;
+  }
+  .stars{ display:flex; gap:2px; }
+  .stars svg{ width:20px; height:20px; fill:var(--star); }
+  .rating-num{ font-family:'Barlow Condensed'; font-weight:800; font-size:22px; }
+  .rating-txt{ color:var(--muted); font-size:14.5px; }
+
+  .review-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+  }
+  .review-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:0 16px 32px -26px rgba(18,21,26,0.16);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .review-top{ display:flex; align-items:center; gap:12px; }
+  .avatar{
+    width:42px; height:42px; border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), #0d3ab5);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Barlow Condensed'; font-weight:800; font-size:17px; color:#fff;
+    flex-shrink:0;
+  }
+  .review-name{ font-weight:800; font-size:14.5px; }
+  .review-stars{ display:flex; gap:1px; margin-top:2px;}
+  .review-stars svg{ width:13px; height:13px; fill:var(--star); }
+  .review-text{ font-size:14.5px; color:#333A44; }
+  .review-badge{
+    font-family:'JetBrains Mono'; font-size:11px; color:var(--muted);
+    margin-top:auto; padding-top:10px; border-top:1px dashed var(--line);
+  }
+
+  /* how it works */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .step-card{ position:relative; padding-top:8px; }
+  .step-num{
+    font-family:'JetBrains Mono'; font-size:13px; color:var(--orange); letter-spacing:1px; margin-bottom:10px; display:block;
+  }
+  .step-card h3{ font-size:24px; text-transform:none; letter-spacing:0; margin-bottom:10px; }
+  .step-card p{ color:var(--muted); font-size:15px; }
+  .step-line{ height:2px; background:var(--line); margin:0 0 26px; position:relative; }
+  .step-line::after{
+    content:""; position:absolute; left:0; top:-3px; width:60px; height:8px;
+    background:var(--orange); clip-path:polygon(0 50%, 70% 0, 100% 50%, 70% 100%);
+  }
+
+  /* faq */
+  .faq-list{ display:flex; flex-direction:column; gap:12px; max-width:760px; }
+  .faq-item{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 12px 26px -24px rgba(18,21,26,0.16);
+  }
+  .faq-q{
+    padding:20px 22px; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; font-weight:800; font-size:16px;
+  }
+  .faq-q .plus{ font-family:'JetBrains Mono'; color:var(--blue); font-size:20px; transition:transform .2s ease; flex-shrink:0; margin-left:16px;}
+  .faq-item.open .plus{ transform:rotate(45deg); }
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+    padding:0 22px;
+    color:var(--muted); font-size:14.5px;
+  }
+  .faq-item.open .faq-a{ padding-bottom:20px; }
+
+  /* final CTA */
+  .final-cta{
+    background:linear-gradient(135deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:56px 44px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 24px 48px -30px rgba(18,21,26,0.18);
+  }
+  .final-cta::before{
+    content:"";
+    position:absolute; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle, rgba(22,87,255,0.16), transparent 70%);
+    top:-140px; right:-100px;
+  }
+  .final-cta h2{ font-size:clamp(30px,4.4vw,48px); margin-bottom:16px; position:relative; }
+  .final-cta p{ color:var(--muted); font-size:17px; margin-bottom:30px; position:relative; }
+
+  footer{
+    padding:34px 0 44px;
+    border-top:1px solid var(--line);
+    color:var(--muted); font-size:13px;
+    text-align:center;
+  }
+
+  /* sticky whatsapp */
+  .sticky-wa{
+    position:fixed; right:22px; bottom:22px; z-index:60;
+    background:#25D366; color:#0B0D10;
+    width:60px; height:60px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 12px 30px -8px rgba(37,211,102,0.6);
+    animation: pulse 2.4s infinite;
+  }
+  .sticky-wa svg{ width:30px; height:30px; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(37,211,102,0.55); }
+    70%{ box-shadow:0 0 0 16px rgba(37,211,102,0); }
+    100%{ box-shadow:0 0 0 0 rgba(37,211,102,0); }
+  }
+
+  /* load animation */
+  .reveal{ opacity:0; transform:translateY(18px); animation:revealUp .7s ease forwards; }
+  @keyframes revealUp{ to{ opacity:1; transform:translateY(0);} }
+  .d1{animation-delay:.05s;} .d2{animation-delay:.15s;} .d3{animation-delay:.25s;} .d4{animation-delay:.35s;}
+
+  @media (max-width: 880px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .diff-grid{ grid-template-columns:repeat(2,1fr); }
+    .review-grid{ grid-template-columns:1fr; }
+    .steps{ grid-template-columns:1fr; }
+    .header-inner .btn-header span{ display:none; }
+  }
+
+  :focus-visible{ outline:2px solid var(--blue); outline-offset:3px; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="asphalt"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <img src="data:image/png;base64,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" alt="iCom Motors">
+      <span>iCOM MOTORS</span>
+    </div>
+    <a class="btn btn-primary btn-header" id="waHeader" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 12 4a9 9 0 0 0-7.7 13.6L3 21l3.5-1.2A9 9 0 0 0 12 21a9 9 0 0 0 5.6-14.7zm-5.6 13a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.5.8.8-2.4-.2-.3A7.5 7.5 0 1 1 19.5 12 7.4 7.4 0 0 1 12 19.3zm4.1-5.6c-.2-.1-1.3-.7-1.5-.7s-.4-.1-.5.1-.5.7-.6.8-.2.1-.4 0a6.1 6.1 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.6c-.1-.2 0-.3.1-.4l.3-.4.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.7s-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2 4.8 4.8 0 0 0 1 2.5 10.9 10.9 0 0 0 4.2 3.7c.6.2 1 .4 1.4.5a3.3 3.3 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg>
+      <span>Falar no WhatsApp</span>
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow reveal">ICOM MOTORS · SEMINOVOS COM PROCEDÊNCIA</div>
+      <h1 class="reveal d1">MAIS DE 80 CARROS <span class="hl">REVISADOS</span> ESPERANDO POR VOCÊ</h1>
+      <p class="sub reveal d2">Do popular ao SUV, com garantia e procedência checada. Veja o que chegou essa semana antes que alguém leve primeiro.</p>
+      <div class="hero-ctas reveal d3">
+        <a class="btn btn-primary" id="waHero" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 12 4a9 9 0 0 0-7.7 13.6L3 21l3.5-1.2A9 9 0 0 0 12 21a9 9 0 0 0 5.6-14.7zm-5.6 13a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.5.8.8-2.4-.2-.3A7.5 7.5 0 1 1 19.5 12 7.4 7.4 0 0 1 12 19.3zm4.1-5.6c-.2-.1-1.3-.7-1.5-.7s-.4-.1-.5.1-.5.7-.6.8-.2.1-.4 0a6.1 6.1 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.6c-.1-.2 0-.3.1-.4l.3-.4.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.7s-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2 4.8 4.8 0 0 0 1 2.5 10.9 10.9 0 0 0 4.2 3.7c.6.2 1 .4 1.4.5a3.3 3.3 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg>
+          Conhecer o Estoque no WhatsApp
+        </a>
+        <span class="hero-note">resposta em poucos minutos</span>
+      </div>
+    </div>
+
+    <div class="odo-card reveal d4">
+      <div class="odo-label">CARROS DISPONÍVEIS AGORA</div>
+      <div class="odo-digits">
+        <div class="odo-digit" id="d1">0</div>
+        <div class="odo-digit" id="d2">0</div>
+        <div class="odo-plus">+</div>
+      </div>
+      <div class="odo-sub">atualizado toda semana com chegadas novas</div>
+      <div class="odo-tags">
+        <span class="odo-tag">HATCH</span>
+        <span class="odo-tag">SEDAN</span>
+        <span class="odo-tag">SUV</span>
+        <span class="odo-tag">PICAPE</span>
+        <span class="odo-tag">GARANTIA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="road-divider"></div>
+
+<section id="diferenciais">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">POR QUE A ICOM MOTORS</div>
+      <h2>Carro Bom Não É Sorte. É Processo.</h2>
+      <p>Todo carro passa pelos mesmos filtros antes de chegar até você — sem exceção.</p>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card">
+        <div class="diff-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/></svg></div>
+        <h3>Garantia real</h3>
+        <p>Todo veículo sai com garantia, não é conversa de vendedor.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Revisão completa</h3>
+        <p>Checklist mecânico e elétrico feito antes de qualquer carro entrar na vitrine.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></div>
+        <h3>Procedência checada</h3>
+        <p>Histórico do veículo verificado. Sem km rodada escondida, sem sinistro maquiado.</p>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div>
+        <h3>Financiamento facilitado</h3>
+        <p>Parceria com os principais bancos pra aprovar rápido, mesmo com nome sujo em alguns casos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="depoimentos">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">QUEM COMPROU, APROVOU</div>
+      <h2>Avaliação Real de Cliente Real</h2>
+    </div>
+    <div class="reviews-strip">
+      <div class="stars">
+        <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>
+        <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>
+        <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>
+        <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>
+        <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>
+      </div>
+      <span class="rating-num">5.0</span>
+      <span class="rating-txt">baseado em avaliações reais no Google</span>
+    </div>
+
+    <div class="review-grid">
+      <div class="review-card">
+        <div class="review-top">
+          <div class="avatar">AM</div>
+          <div>
+            <div class="review-name">Arnaldo Henrique Miranda</div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"A experiência foi espetacular, o Gabriel nos auxiliou de forma fantástica, dando suporte na escolha do carro até o pós-venda. Super recomendo a loja e o especialista que nos atendeu."</p>
+        <div class="review-badge">Google · avaliação verificada</div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="avatar">DK</div>
+          <div>
+            <div class="review-name">Diogo K Taba</div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"Fiz a compra totalmente online e recebi o carro em São Paulo. Fiquei apreensivo no começo, mas a loja é confiável e o carro chegou em boas condições."</p>
+        <div class="review-badge">Google · avaliação verificada</div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="avatar">AO</div>
+          <div>
+            <div class="review-name">Aline Oliveira</div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="review-text">"Fui só pesquisar, sem pretensão nenhuma, e acabei fechando negócio de tão bem atendida que fui. Tiraram todas as minhas dúvidas do início ao pós-venda."</p>
+        <div class="review-badge">Google · avaliação verificada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="road-divider"></div>
+
+<section id="como-funciona">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">COMO FUNCIONA</div>
+      <h2>Do WhatsApp às Chaves na Mão</h2>
+    </div>
+    <div class="steps">
+      <div class="step-card">
+        <span class="step-num">PASSO 1</span>
+        <div class="step-line"></div>
+        <h3>Chama no WhatsApp</h3>
+        <p>Conta o que você procura: modelo, faixa de preço ou forma de pagamento.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">PASSO 2</span>
+        <div class="step-line"></div>
+        <h3>Veja as opções do estoque</h3>
+        <p>Nossa equipe separa os carros compatíveis, com fotos, km e condições.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">PASSO 3</span>
+        <div class="step-line"></div>
+        <h3>Test-drive e fecha negócio</h3>
+        <p>Agenda uma visita, testa o carro e resolve tudo na loja, sem enrolação.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">DÚVIDAS FREQUENTES</div>
+      <h2>Antes de Chamar no Zap</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Consigo financiar mesmo com restrição no CPF? <span class="plus">+</span></div>
+        <div class="faq-a"><p>Trabalhamos com várias instituições financeiras e analisamos caso a caso. Fale com a equipe no WhatsApp que fazemos uma simulação sem compromisso.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Os carros têm garantia de verdade? <span class="plus">+</span></div>
+        <div class="faq-a"><p>Sim. Todo veículo revisado sai com garantia, com prazo informado direto no atendimento antes da compra.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Dá pra comprar sem sair de casa? <span class="plus">+</span></div>
+        <div class="faq-a"><p>Dá. Temos clientes que compraram 100% online, com entrega do carro na sua cidade.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Aceitam meu carro como parte do pagamento? <span class="plus">+</span></div>
+        <div class="faq-a"><p>Sim, fazemos avaliação do seu usado na hora, direto pelo WhatsApp ou presencial na loja.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="final-cta">
+      <h2>São Mais de 80 Carros. <br>Só Falta Você Escolher o Seu.</h2>
+      <p>Fala com a nossa equipe agora e recebe as opções que combinam com o que você procura.</p>
+      <a class="btn btn-primary" id="waFinal" href="#" target="_blank" rel="noopener" style="font-size:16px; padding:16px 30px;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.6 6.3A8.9 8.9 0 0 0 12 4a9 9 0 0 0-7.7 13.6L3 21l3.5-1.2A9 9 0 0 0 12 21a9 9 0 0 0 5.6-14.7zm-5.6 13a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.5.8.8-2.4-.2-.3A7.5 7.5 0 1 1 19.5 12 7.4 7.4 0 0 1 12 19.3zm4.1-5.6c-.2-.1-1.3-.7-1.5-.7s-.4-.1-.5.1-.5.7-.6.8-.2.1-.4 0a6.1 6.1 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.6c-.1-.2 0-.3.1-.4l.3-.4.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.7s-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2 4.8 4.8 0 0 0 1 2.5 10.9 10.9 0 0 0 4.2 3.7c.6.2 1 .4 1.4.5a3.3 3.3 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg>
+        Conhecer o Estoque no WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">iCom Motors · Todos os carros com procedência verificada e garantia.</div>
+</footer>
+
+<a class="sticky-wa" id="waSticky" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 12 4a9 9 0 0 0-7.7 13.6L3 21l3.5-1.2A9 9 0 0 0 12 21a9 9 0 0 0 5.6-14.7zm-5.6 13a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.5.8.8-2.4-.2-.3A7.5 7.5 0 1 1 19.5 12 7.4 7.4 0 0 1 12 19.3zm4.1-5.6c-.2-.1-1.3-.7-1.5-.7s-.4-.1-.5.1-.5.7-.6.8-.2.1-.4 0a6.1 6.1 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.6c-.1-.2 0-.3.1-.4l.3-.4.2-.3a.4.4 0 0 0 0-.4c0-.1-.5-1.3-.7-1.7s-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2 4.8 4.8 0 0 0 1 2.5 10.9 10.9 0 0 0 4.2 3.7c.6.2 1 .4 1.4.5a3.3 3.3 0 0 0 1.5.1 2.5 2.5 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.4-.3z"/></svg>
+</a>
+
+<script>
+  // ===== CONFIG: troque o número e a mensagem padrão do WhatsApp aqui =====
+  const WHATSAPP_NUMBER = "551231996370"; // iCom Motors
+  const WHATSAPP_MSG = "Olá! Vim pela página e quero conhecer o estoque da iCom Motors.";
+  const waLink = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(WHATSAPP_MSG);
+  ["waHeader","waHero","waFinal","waSticky"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = waLink;
+  });
+
+  // odometer count-up 00 -> 80
+  function animateOdometer(){
+    const d1 = document.getElementById('d1');
+    const d2 = document.getElementById('d2');
+    let target = 80;
+    let current = 0;
+    const duration = 1400;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      current = Math.round(eased * target);
+      const s = String(current).padStart(2,'0');
+      d1.textContent = s[0];
+      d2.textContent = s[1];
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('load', animateOdometer);
+
+  // faq accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{
+        o.classList.remove('open');
+        o.querySelector('.faq-a').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 30 + 'px';
+      }
+    });
+  });
+</script>
+</body>
+</html>
